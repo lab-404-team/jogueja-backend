@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+		<PackageReference Include="Hangfire.AspNetCore" />
+		<PackageReference Include="Hangfire.MySqlStorage" />
+		<PackageReference Include="Hangfire.PostgreSql" />
+		<PackageReference Include="Hangfire" />
+		<PackageReference Include="MediatR" />
+		<PackageReference Include="Serilog" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Core.Domain\Core.Domain.csproj" />
+		<ProjectReference Include="..\Core.Shared\Core.Shared.csproj" />
+	</ItemGroup>
+
+</Project>

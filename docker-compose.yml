@@ -1,0 +1,96 @@
+services:
+  jogueja-api:
+    build:
+      context: .
+      dockerfile: src/Web/Jogueja.Api/Dockerfile
+    container_name: jogueja-api
+    restart: unless-stopped
+    ports:
+      - "8464:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__Default: "Server=mysql;Port=3306;Database=eventStore;Uid=root;Pwd=!MyStrongPassword;AllowUserVariables=True;Application Name=jogueja"
+      ConnectionStrings__Hangfire: "Server=mysql;Port=3306;Database=hangfire;Uid=root;Pwd=!MyStrongPassword;AllowUserVariables=True;Application Name=jogueja"
+      ConnectionStrings__Projection: "mongodb://mongoadmin:secret@mongo:27017/"
+      EventBusOptions__ConnectionString: "amqp://guest:guest@rabbitmq:5672/jogueja"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - jogueja
+
+  mysql:
+    image: mysql:8.0
+    container_name: jogueja-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "!MyStrongPassword"
+      MYSQL_DATABASE: eventStore
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p!MyStrongPassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - jogueja
+
+  mongo:
+    image: mongo:7
+    container_name: jogueja-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "-u", "mongoadmin", "-p", "secret", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - jogueja
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: jogueja-rabbitmq
+    restart: unless-stopped
+    hostname: jogueja-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_VHOST: jogueja
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - jogueja
+
+volumes:
+  mysql-data:
+  mongo-data:
+  rabbitmq-data:
+
+networks:
+  jogueja:
+    driver: bridge

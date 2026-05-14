@@ -246,3 +246,13 @@ FodyWeavers.xsd
 /httpRequests/
 /dataSources/
 /dataSources.local.xml
+# Claude
+/.claude
+/claude
+Claude.md
+CLAUDE.md
+claude.md
+/.swarm
+/.claude-flow
+.mcp.json
+ruvector.db

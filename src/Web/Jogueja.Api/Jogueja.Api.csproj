@@ -33,6 +33,10 @@
     <ProjectReference Include="..\..\Core\Core.Infrastructure\Core.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Core\Core.Persistence\Core.Persistence.csproj" />
     <ProjectReference Include="..\..\Core\Core.Shared\Core.Shared.csproj" />
+    <ProjectReference Include="..\..\Modules\Players\Players.Application\Players.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\Players\Players.Persistence\Players.Persistence.csproj" />
+    <ProjectReference Include="..\..\Modules\CourtOwners\CourtOwners.Application\CourtOwners.Application.csproj" />
+    <ProjectReference Include="..\..\Modules\CourtOwners\CourtOwners.Persistence\CourtOwners.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,3 +1,4 @@
+using Core.Application.Services;
 using Core.Infrastructure.Configuration;
 using Jogueja.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -26,6 +27,7 @@ namespace Jogueja.Api.ServiceInstallers.Handlers
                 });
 
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IPasswordService, PasswordService>();
         }
     }
 }

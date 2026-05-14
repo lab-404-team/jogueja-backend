@@ -7,5 +7,7 @@ namespace Jogueja.Api.Endpoints
         internal const string Games = "Games";
         internal const string Payments = "Payments";
         internal const string WebHooks = "WebHooks";
+        internal const string Players = "Players";
+        internal const string CourtOwners = "CourtOwners";
     }
 }

@@ -2,7 +2,6 @@ using Core.Application.Messaging;
 using Core.Domain.Projection;
 using Core.Shared.Errors;
 using Core.Shared.Results;
-using CourtOwners.Application.CourtOwners;
 
 namespace CourtOwners.Application.CourtOwners.Queries.GetById;
 

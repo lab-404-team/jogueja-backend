@@ -1,7 +1,6 @@
 using Core.Application.Behaviors;
 using Core.Infrastructure.Configuration;
 using FluentValidation;
-using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

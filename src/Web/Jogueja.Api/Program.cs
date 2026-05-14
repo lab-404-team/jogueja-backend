@@ -42,6 +42,7 @@ builder.Services
 
 builder.Services
     .AddApiVersioning(options => options.ReportApiVersions = true)
+    .AddMvc()
     .AddApiExplorer(options =>
     {
         options.GroupNameFormat = "'v'VVV";

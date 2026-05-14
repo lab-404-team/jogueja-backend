@@ -12,13 +12,17 @@ using ControllerBase = Microsoft.AspNetCore.Mvc.ControllerBase;
 
 namespace Jogueja.Api.Endpoints.Players;
 
-[ApiVersion("1")]
 public sealed class LoginPlayerEndpoint(ISender sender, ITokenService tokenService) : EndpointBaseAsync
     .WithRequest<LoginPlayerRequest>
     .WithActionResult<LoginPlayerResponse>
 {
+    [ApiVersion("1")]
     [HttpPost(PlayersRoutes.Login)]
-    [SwaggerOperation(Summary = "Authenticate a player", Tags = [Tags.Players])]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [SwaggerOperation(
+        Summary = "Authenticate a player",
+        Description = "Authenticate a player based on the provided credentials.",
+        Tags = [Tags.Players])]
     public override async Task<ActionResult<LoginPlayerResponse>> HandleAsync(
         [FromBody] LoginPlayerRequest request,
         CancellationToken cancellationToken = default)

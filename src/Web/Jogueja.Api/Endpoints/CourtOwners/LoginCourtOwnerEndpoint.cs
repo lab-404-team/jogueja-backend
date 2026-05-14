@@ -12,13 +12,17 @@ using ControllerBase = Microsoft.AspNetCore.Mvc.ControllerBase;
 
 namespace Jogueja.Api.Endpoints.CourtOwners;
 
-[ApiVersion("1")]
 public sealed class LoginCourtOwnerEndpoint(ISender sender, ITokenService tokenService) : EndpointBaseAsync
     .WithRequest<LoginCourtOwnerRequest>
     .WithActionResult<LoginCourtOwnerResponse>
 {
+    [ApiVersion("1")]
     [HttpPost(CourtOwnersRoutes.Login)]
-    [SwaggerOperation(Summary = "Authenticate a court owner", Tags = [Tags.CourtOwners])]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [SwaggerOperation(
+        Summary = "Authenticate a court owner",
+        Description = "Authenticate a court owner based on the provided credentials.",
+        Tags = [Tags.CourtOwners])]
     public override async Task<ActionResult<LoginCourtOwnerResponse>> HandleAsync(
         [FromBody] LoginCourtOwnerRequest request,
         CancellationToken cancellationToken = default)

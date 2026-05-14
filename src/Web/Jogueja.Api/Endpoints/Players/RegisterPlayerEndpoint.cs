@@ -11,13 +11,17 @@ using ControllerBase = Microsoft.AspNetCore.Mvc.ControllerBase;
 
 namespace Jogueja.Api.Endpoints.Players;
 
-[ApiVersion("1")]
 public sealed class RegisterPlayerEndpoint(ISender sender) : EndpointBaseAsync
     .WithRequest<RegisterPlayerRequest>
     .WithActionResult<Guid>
 {
+    [ApiVersion("1")]
     [HttpPost(PlayersRoutes.Register)]
-    [SwaggerOperation(Summary = "Register a new player", Tags = [Tags.Players])]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [SwaggerOperation(
+        Summary = "Register a new player",
+        Description = "Register a new player based on the provided request data.",
+        Tags = [Tags.Players])]
     public override async Task<ActionResult<Guid>> HandleAsync(
         [FromBody] RegisterPlayerRequest request,
         CancellationToken cancellationToken = default)

@@ -12,18 +12,17 @@ using ControllerBase = Microsoft.AspNetCore.Mvc.ControllerBase;
 
 namespace Jogueja.Api.Endpoints.Players;
 
-[ApiVersion("1")]
 public sealed class GetPlayerByIdEndpoint(ISender sender) : EndpointBaseAsync
     .WithRequest<Guid>
     .WithActionResult<PlayerResponse>
 {
-    [ApiVersion("1.0")]
+    [ApiVersion("1")]
     [HttpGet(PlayersRoutes.GetPlayerById)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [SwaggerOperation(
-    Summary = "Get player by ID",
-    Description = "Get player by ID based on the provided request data.",
-    Tags = [Tags.Players])]
+        Summary = "Get player by ID",
+        Description = "Get player by ID based on the provided request data.",
+        Tags = [Tags.Players])]
     [Authorize]
     public override async Task<ActionResult<PlayerResponse>> HandleAsync(
         [FromRoute] Guid playerId,

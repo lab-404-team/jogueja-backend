@@ -11,13 +11,17 @@ using ControllerBase = Microsoft.AspNetCore.Mvc.ControllerBase;
 
 namespace Jogueja.Api.Endpoints.CourtOwners;
 
-[ApiVersion("1")]
 public sealed class RegisterCourtOwnerEndpoint(ISender sender) : EndpointBaseAsync
     .WithRequest<RegisterCourtOwnerRequest>
     .WithActionResult<Guid>
 {
+    [ApiVersion("1")]
     [HttpPost(CourtOwnersRoutes.Register)]
-    [SwaggerOperation(Summary = "Register a new court owner", Tags = [Tags.CourtOwners])]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [SwaggerOperation(
+        Summary = "Register a new court owner",
+        Description = "Register a new court owner based on the provided request data.",
+        Tags = [Tags.CourtOwners])]
     public override async Task<ActionResult<Guid>> HandleAsync(
         [FromBody] RegisterCourtOwnerRequest request,
         CancellationToken cancellationToken = default)

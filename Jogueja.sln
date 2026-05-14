@@ -44,7 +44,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourtOwners.Application", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourtOwners.Persistence", "src\Modules\CourtOwners\CourtOwners.Persistence\CourtOwners.Persistence.csproj", "{B8C9D0E1-F2A3-4567-1234-678901234567}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Endpoints", "Core.Endpoints\Core.Endpoints.csproj", "{5DE1816B-4C19-4F7C-B4B8-1E7AA530FDAF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Endpoints", "src\Core\Core.Endpoints\Core.Endpoints.csproj", "{5DE1816B-4C19-4F7C-B4B8-1E7AA530FDAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

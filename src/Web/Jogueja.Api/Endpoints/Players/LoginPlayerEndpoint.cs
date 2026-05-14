@@ -28,7 +28,7 @@ public sealed class LoginPlayerEndpoint(ISender sender, ITokenService tokenServi
             .Map(auth => new LoginPlayerResponse(
                 auth.PlayerId, auth.Name,
                 tokenService.GenerateToken(auth.PlayerId.ToString(), auth.Role)))
-            .Match(ControllerBase.Ok, this.HandleFailure);
+            .Match(result => Ok(result), this.HandleFailure);
 }
 
 public sealed record LoginPlayerRequest(string Email, string Password);

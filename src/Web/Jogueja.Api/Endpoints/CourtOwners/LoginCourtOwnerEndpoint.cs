@@ -28,7 +28,7 @@ public sealed class LoginCourtOwnerEndpoint(ISender sender, ITokenService tokenS
             .Map(auth => new LoginCourtOwnerResponse(
                 auth.CourtOwnerId, auth.Name,
                 tokenService.GenerateToken(auth.CourtOwnerId.ToString(), auth.Role)))
-            .Match(ControllerBase.Ok, this.HandleFailure);
+            .Match(result => Ok(result), this.HandleFailure);
 }
 
 public sealed record LoginCourtOwnerRequest(string Email, string Password);

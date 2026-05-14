@@ -30,5 +30,5 @@ public sealed class GetPlayerByIdEndpoint(ISender sender) : EndpointBaseAsync
         CancellationToken cancellationToken = default)
         => await Result.Create(new GetPlayerByIdQuery(playerId))
         .Bind(query => sender.Send(query, cancellationToken))
-        .Match(ControllerBase.Ok, this.HandleFailure);
+        .Match(result => Ok(result), this.HandleFailure);
 }

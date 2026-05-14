@@ -25,5 +25,5 @@ public sealed class GetCourtOwnerByIdEndpoint(ISender sender) : EndpointBaseAsyn
         CancellationToken cancellationToken = default)
         => await Result.Create(new GetCourtOwnerByIdQuery(courtOwnerId))
             .Bind(query => sender.Send(query, cancellationToken))
-            .Match(ControllerBase.Ok, this.HandleFailure);
+            .Match(result => Ok(result), this.HandleFailure);
 }

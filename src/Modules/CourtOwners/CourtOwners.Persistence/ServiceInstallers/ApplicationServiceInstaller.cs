@@ -1,8 +1,11 @@
 using Core.Application.Behaviors;
 using Core.Infrastructure.Configuration;
 using FluentValidation;
+using MediatR;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Jogueja.Api.ServiceInstallers.Application;
+namespace CourtOwners.Persistence.ServiceInstallers;
 
 internal sealed class ApplicationServiceInstaller : IServiceInstaller
 {
@@ -10,9 +13,9 @@ internal sealed class ApplicationServiceInstaller : IServiceInstaller
         services
             .AddMediatR(config =>
             {
-                config.RegisterServicesFromAssembly(AssemblyReference.Assembly);
+                config.RegisterServicesFromAssembly(CourtOwners.Application.AssemblyReference.Assembly);
                 config.AddOpenBehavior(typeof(RequestLoggingPipelineBehavior<,>));
                 config.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
             })
-            .AddValidatorsFromAssembly(AssemblyReference.Assembly, includeInternalTypes: true);
+            .AddValidatorsFromAssembly(CourtOwners.Application.AssemblyReference.Assembly, includeInternalTypes: true);
 }

@@ -13,7 +13,9 @@ builder.Services
     .InstallServicesFromAssemblies(
         builder.Configuration,
         Jogueja.Api.AssemblyReference.Assembly,
-        Core.Persistence.AssemblyReference.Assembly,
+        Core.Persistence.AssemblyReference.Assembly)
+    .InstallModulesFromAssemblies(
+        builder.Configuration,
         Players.Persistence.AssemblyReference.Assembly,
         CourtOwners.Persistence.AssemblyReference.Assembly);
 

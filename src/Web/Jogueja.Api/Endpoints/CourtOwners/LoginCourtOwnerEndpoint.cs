@@ -1,12 +1,14 @@
 using Ardalis.ApiEndpoints;
 using Asp.Versioning;
 using Core.Endpoints.Extensions;
+using Core.Shared.Results;
 using CourtOwners.Application.CourtOwners.Commands.Login;
 using Jogueja.Api.Endpoints.Routes;
 using Jogueja.Api.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using ControllerBase = Microsoft.AspNetCore.Mvc.ControllerBase;
 
 namespace Jogueja.Api.Endpoints.CourtOwners;
 
@@ -20,16 +22,13 @@ public sealed class LoginCourtOwnerEndpoint(ISender sender, ITokenService tokenS
     public override async Task<ActionResult<LoginCourtOwnerResponse>> HandleAsync(
         [FromBody] LoginCourtOwnerRequest request,
         CancellationToken cancellationToken = default)
-    {
-        var command = new LoginCourtOwnerCommand(request.Email, request.Password);
-        var result = await sender.Send(command, cancellationToken);
-
-        if (result.IsFailure)
-            return this.HandleFailure(result);
-
-        var token = tokenService.GenerateToken(result.Value.CourtOwnerId.ToString(), result.Value.Role);
-        return Ok(new LoginCourtOwnerResponse(result.Value.CourtOwnerId, result.Value.Name, token));
-    }
+        => await Result.Create(request)
+            .Map(req => new LoginCourtOwnerCommand(req.Email, req.Password))
+            .Bind(cmd => sender.Send(cmd, cancellationToken))
+            .Map(auth => new LoginCourtOwnerResponse(
+                auth.CourtOwnerId, auth.Name,
+                tokenService.GenerateToken(auth.CourtOwnerId.ToString(), auth.Role)))
+            .Match(ControllerBase.Ok, this.HandleFailure);
 }
 
 public sealed record LoginCourtOwnerRequest(string Email, string Password);

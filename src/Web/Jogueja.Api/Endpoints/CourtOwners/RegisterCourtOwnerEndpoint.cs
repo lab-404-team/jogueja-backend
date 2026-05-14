@@ -1,11 +1,13 @@
 using Ardalis.ApiEndpoints;
 using Asp.Versioning;
 using Core.Endpoints.Extensions;
+using Core.Shared.Results;
 using CourtOwners.Application.CourtOwners.Commands.Register;
 using Jogueja.Api.Endpoints.Routes;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using ControllerBase = Microsoft.AspNetCore.Mvc.ControllerBase;
 
 namespace Jogueja.Api.Endpoints.CourtOwners;
 
@@ -19,15 +21,10 @@ public sealed class RegisterCourtOwnerEndpoint(ISender sender) : EndpointBaseAsy
     public override async Task<ActionResult<Guid>> HandleAsync(
         [FromBody] RegisterCourtOwnerRequest request,
         CancellationToken cancellationToken = default)
-    {
-        var command = new RegisterCourtOwnerCommand(
-            request.Name, request.Email, request.Password, request.Phone, request.Document);
-        var result = await sender.Send(command, cancellationToken);
-
-        return result.IsSuccess
-            ? CreatedAtAction(nameof(HandleAsync), new { courtOwnerId = result.Value }, result.Value)
-            : this.HandleFailure(result);
-    }
+        => await Result.Create(request)
+            .Map(req => new RegisterCourtOwnerCommand(req.Name, req.Email, req.Password, req.Phone, req.Document))
+            .Bind(cmd => sender.Send(cmd, cancellationToken))
+            .Match(id => CreatedAtAction(nameof(HandleAsync), new { courtOwnerId = id }, id), this.HandleFailure);
 }
 
 public sealed record RegisterCourtOwnerRequest(

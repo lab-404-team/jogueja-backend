@@ -1,12 +1,14 @@
 using Ardalis.ApiEndpoints;
 using Asp.Versioning;
 using Core.Endpoints.Extensions;
+using Core.Shared.Results;
 using Jogueja.Api.Endpoints.Routes;
 using Jogueja.Api.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Players.Application.Players.Commands.Login;
 using Swashbuckle.AspNetCore.Annotations;
+using ControllerBase = Microsoft.AspNetCore.Mvc.ControllerBase;
 
 namespace Jogueja.Api.Endpoints.Players;
 
@@ -20,16 +22,13 @@ public sealed class LoginPlayerEndpoint(ISender sender, ITokenService tokenServi
     public override async Task<ActionResult<LoginPlayerResponse>> HandleAsync(
         [FromBody] LoginPlayerRequest request,
         CancellationToken cancellationToken = default)
-    {
-        var command = new LoginPlayerCommand(request.Email, request.Password);
-        var result = await sender.Send(command, cancellationToken);
-
-        if (result.IsFailure)
-            return this.HandleFailure(result);
-
-        var token = tokenService.GenerateToken(result.Value.PlayerId.ToString(), result.Value.Role);
-        return Ok(new LoginPlayerResponse(result.Value.PlayerId, result.Value.Name, token));
-    }
+        => await Result.Create(request)
+            .Map(req => new LoginPlayerCommand(req.Email, req.Password))
+            .Bind(cmd => sender.Send(cmd, cancellationToken))
+            .Map(auth => new LoginPlayerResponse(
+                auth.PlayerId, auth.Name,
+                tokenService.GenerateToken(auth.PlayerId.ToString(), auth.Role)))
+            .Match(ControllerBase.Ok, this.HandleFailure);
 }
 
 public sealed record LoginPlayerRequest(string Email, string Password);

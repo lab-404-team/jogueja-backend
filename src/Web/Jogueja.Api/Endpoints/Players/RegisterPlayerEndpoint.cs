@@ -1,11 +1,13 @@
 using Ardalis.ApiEndpoints;
 using Asp.Versioning;
 using Core.Endpoints.Extensions;
+using Core.Shared.Results;
 using Jogueja.Api.Endpoints.Routes;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Players.Application.Players.Commands.Register;
 using Swashbuckle.AspNetCore.Annotations;
+using ControllerBase = Microsoft.AspNetCore.Mvc.ControllerBase;
 
 namespace Jogueja.Api.Endpoints.Players;
 
@@ -19,14 +21,10 @@ public sealed class RegisterPlayerEndpoint(ISender sender) : EndpointBaseAsync
     public override async Task<ActionResult<Guid>> HandleAsync(
         [FromBody] RegisterPlayerRequest request,
         CancellationToken cancellationToken = default)
-    {
-        var command = new RegisterPlayerCommand(request.Name, request.Email, request.Password, request.Phone);
-        var result = await sender.Send(command, cancellationToken);
-
-        return result.IsSuccess
-            ? CreatedAtAction(nameof(HandleAsync), new { playerId = result.Value }, result.Value)
-            : this.HandleFailure(result);
-    }
+        => await Result.Create(request)
+            .Map(req => new RegisterPlayerCommand(req.Name, req.Email, req.Password, req.Phone))
+            .Bind(cmd => sender.Send(cmd, cancellationToken))
+            .Match(id => CreatedAtAction(nameof(HandleAsync), new { playerId = id }, id), this.HandleFailure);
 }
 
 public sealed record RegisterPlayerRequest(string Name, string Email, string Password, string Phone);

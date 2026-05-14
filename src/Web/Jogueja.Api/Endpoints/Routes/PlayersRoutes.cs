@@ -6,5 +6,5 @@ internal static class PlayersRoutes
 
     internal const string Register = $"{BaseUri}/register";
     internal const string Login = $"{BaseUri}/login";
-    internal const string GetById = $"{BaseUri}/{{playerId:guid}}";
+    internal const string GetPlayerById = $"{BaseUri}/{{playerId:guid}}";
 }

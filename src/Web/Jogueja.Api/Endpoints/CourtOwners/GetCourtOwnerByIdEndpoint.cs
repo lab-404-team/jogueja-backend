@@ -1,12 +1,14 @@
 using Ardalis.ApiEndpoints;
 using Asp.Versioning;
 using Core.Endpoints.Extensions;
+using Core.Shared.Results;
 using CourtOwners.Application.CourtOwners.Queries.GetById;
 using Jogueja.Api.Endpoints.Routes;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using ControllerBase = Microsoft.AspNetCore.Mvc.ControllerBase;
 
 namespace Jogueja.Api.Endpoints.CourtOwners;
 
@@ -21,10 +23,7 @@ public sealed class GetCourtOwnerByIdEndpoint(ISender sender) : EndpointBaseAsyn
     public override async Task<ActionResult<CourtOwnerResponse>> HandleAsync(
         [FromRoute] Guid courtOwnerId,
         CancellationToken cancellationToken = default)
-    {
-        var query = new GetCourtOwnerByIdQuery(courtOwnerId);
-        var result = await sender.Send(query, cancellationToken);
-
-        return result.IsSuccess ? Ok(result.Value) : this.HandleFailure(result);
-    }
+        => await Result.Create(new GetCourtOwnerByIdQuery(courtOwnerId))
+            .Bind(query => sender.Send(query, cancellationToken))
+            .Match(ControllerBase.Ok, this.HandleFailure);
 }
